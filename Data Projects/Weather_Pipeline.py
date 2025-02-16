@@ -125,9 +125,8 @@ def plot_temperature_trends(filename="weather_data.csv"):
         print(f"File '{filename}' not found.")
 
 
-def save_to_csv(data, filename="weather_data.csv"):
+def save_to_csv(data, fieldnames, filename="weather_data.csv"):
     if data:
-        fieldnames = ["city", "temperature", "humidity", "weather", "timestamp"]
         try:
             with open(filename, mode="a", newline="") as file:
                 writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -154,11 +153,14 @@ if __name__ == "__main__":
         #     print("Invalid data. Skipping save and analysis.")
         # time.sleep(900) #wait 15 minutes before next request
 
-
+    # Weather
     raw_weather_data = check_api_response(WEATHER_URL, "weather")
     results_weather = transform_weather_data(raw_weather_data)
+    weather_fieldnames = ["city", "temperature", "humidity", "weather", "timestamp"]
+    save_to_csv(results_weather, weather_fieldnames, "weather.csv")
 
+    #Air pollution
     raw_pollution_data = check_api_response(POLLUTION_URL, "pollution")
     results_pollution = transform_pollution_data(raw_pollution_data)
-    print(results_weather)
-    print(results_pollution)
+    pollution_fieldnames = ["AQI", "CO", "NO", "NO2", "O3", "SO2", "PM2_5"]
+    save_to_csv(results_pollution, pollution_fieldnames, "air_pollution.csv")
