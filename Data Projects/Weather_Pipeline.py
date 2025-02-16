@@ -30,10 +30,6 @@ def check_api_response(URL, label):
 # Transform weather data
 def transform_weather_data(data):
     try:
-        response = requests.get(WEATHER_URL)
-        response.raise_for_status()  # Sprawdza, czy nie ma błędu HTTP
-        data = response.json()
-
         transformed_data = {
             "city": data.get("name", "Unknown").encode().decode("unicode_escape"),
             "temperature": data.get("main", {}).get("temp", "N/A"),
@@ -46,6 +42,29 @@ def transform_weather_data(data):
     except requests.exceptions.RequestException as e:
         print(f"Error fetching weather data: {e}")
         return None
+
+# Transform air pollution data
+def transform_pollution_data(data):
+    try:
+        # Choosing the first item from the list (if exists)
+        air_quality_data = data["list"][0]
+
+        transformed_data = {
+            "AQI" : air_quality_data["main"].get("aqi", "N/A"),
+            "CO" : air_quality_data.get("components", {}).get("co", {}),
+            "NO" : air_quality_data.get("components", {}).get("no", {}),
+            "NO2" : air_quality_data.get("components", {}).get("no2", {}),
+            "O3" : air_quality_data.get("components", {}).get("o3", {}),
+            "SO2" : air_quality_data.get("components", {}).get("so2", {}),
+            "PM2_5" : air_quality_data.get("components", {}).get("pm2_5", {})
+        }
+
+
+        return transformed_data
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Error transforming air pollution data: {e}")
+        return {}
 
 #Validate weather data
 def validate_weather_data(data):
@@ -105,27 +124,6 @@ def plot_temperature_trends(filename="weather_data.csv"):
     except FileNotFoundError:
         print(f"File '{filename}' not found.")
 
-# Air pollution data
-def fetch_air_pollution():
-    try:
-        response = requests.get(POLLUTION_URL)
-        response.raise_for_status()
-        data = response.json()
-
-        # Wybieramy pierwszy element z listy (jeśli istnieje)
-        air_quality_data = data["list"][0]
-        
-        # Wskaźnik AQI
-        aqi = air_quality_data["main"].get("aqi", "N/A")
-        
-        # Komponenty zanieczyszczeń
-        components = air_quality_data.get("components", {})
-
-        return components
-    
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching air pollution data: {e}")
-        return {}
 
 def save_to_csv(data, filename="weather_data.csv"):
     if data:
@@ -158,11 +156,9 @@ if __name__ == "__main__":
 
 
     raw_weather_data = check_api_response(WEATHER_URL, "weather")
-    raw_pollution_data = check_api_response(POLLUTION_URL, "pollution")
+    results_weather = transform_weather_data(raw_weather_data)
 
-    # transformed = transform_weather_data(raw_weather_data)
-    # pollution = fetch_air_pollution()
-    # if pollution:
-    #     print("Air Pollution Data:\n", json.dumps(pollution))
-    # else:
-    #     print("No air pollution data available.")
+    raw_pollution_data = check_api_response(POLLUTION_URL, "pollution")
+    results_pollution = transform_pollution_data(raw_pollution_data)
+    print(results_weather)
+    print(results_pollution)
