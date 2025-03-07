@@ -67,10 +67,10 @@ def transform_pollution_data(data):
         return {}
 
 #Validate weather data
-def validate_weather_data(data):
+def validate_data(data, fields):
     if not data:
         return False
-    required_fields = ["city", "temperature", "humidity", "weather", "timestamp"]
+    required_fields = fields
     for field in required_fields:
         if field not in data or data[field] == "N/A":
             print(f"Invalid data: Missing or invalid '{field}'")
@@ -142,25 +142,38 @@ def save_to_csv(data, fieldnames, filename="weather_data.csv"):
 
 if __name__ == "__main__":
     
-    # while True:
-    #     raw_data = check_api_response()
-    #     transformed = transform_weather_data(raw_data)
-        # if validate_weather_data(transformed):
-        #     save_to_csv(transformed)
-        #     analyze_weather_data()
-        #     plot_temperature_trends()
-        # else:
-        #     print("Invalid data. Skipping save and analysis.")
-        # time.sleep(900) #wait 15 minutes before next request
+    while True:
+        
+        # Weather
+        raw_weather_data = check_api_response(WEATHER_URL, "weather")
+        results_weather = transform_weather_data(raw_weather_data)
+        weather_fieldnames = ["city", "temperature", "humidity", "weather", "timestamp"]
 
-    # Weather
-    raw_weather_data = check_api_response(WEATHER_URL, "weather")
-    results_weather = transform_weather_data(raw_weather_data)
-    weather_fieldnames = ["city", "temperature", "humidity", "weather", "timestamp"]
-    save_to_csv(results_weather, weather_fieldnames, "weather.csv")
+        if validate_data(results_weather, weather_fieldnames):
+            save_to_csv(results_weather, weather_fieldnames, "weather.csv")
+            # analyze_weather_data()
+            # plot_temperature_trends()
+        else:
+            print("Invalid data. Skipping save and analysis.")
 
-    #Air pollution
-    raw_pollution_data = check_api_response(POLLUTION_URL, "pollution")
-    results_pollution = transform_pollution_data(raw_pollution_data)
-    pollution_fieldnames = ["AQI", "CO", "NO", "NO2", "O3", "SO2", "PM2_5"]
-    save_to_csv(results_pollution, pollution_fieldnames, "air_pollution.csv")
+
+
+         #Air pollution
+        raw_pollution_data = check_api_response(POLLUTION_URL, "pollution")
+        results_pollution = transform_pollution_data(raw_pollution_data)
+        pollution_fieldnames = ["AQI", "CO", "NO", "NO2", "O3", "SO2", "PM2_5"]
+
+        if validate_data(results_pollution, pollution_fieldnames):
+            save_to_csv(results_pollution, pollution_fieldnames, "air_pollution.csv")
+            # analyze_pollution_data()
+            # plot_pollution_trends()
+        else:
+            print("Invalid data. Skipping save and analysis.")
+        
+        print(datetime.now())
+        time.sleep(60) #wait 15 minutes before next request
+
+    
+    
+
+   
