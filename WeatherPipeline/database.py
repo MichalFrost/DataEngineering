@@ -59,6 +59,12 @@ def get_psql_log_by_id(log_id):
 
 
 
+# Import data from Krakow location
+
+def data_import():
+    print()
+
+
 # Error Handling
 @app.errorhandler(500)
 def internal_error(error):

@@ -125,7 +125,7 @@ def plot_temperature_trends(filename="weather_data.csv"):
         print(f"File '{filename}' not found.")
 
 
-def save_to_csv(data, fieldnames, filename="weather_data.csv"):
+def save_to_csv(data, fieldnames, filename="/Users/michal_mroz/Github/DataEngineering/WeatherPipeline/results/weather_data.csv"):
     if data:
         try:
             with open(filename, mode="a", newline="") as file:
@@ -150,7 +150,7 @@ if __name__ == "__main__":
         weather_fieldnames = ["city", "temperature", "humidity", "weather", "timestamp"]
 
         if validate_data(results_weather, weather_fieldnames):
-            save_to_csv(results_weather, weather_fieldnames, "weather.csv")
+            save_to_csv(results_weather, weather_fieldnames, "/Users/michal_mroz/Github/DataEngineering/WeatherPipeline/results/weather.csv")
             # analyze_weather_data()
             # plot_temperature_trends()
         else:
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         pollution_fieldnames = ["AQI", "CO", "NO", "NO2", "O3", "SO2", "PM2_5"]
 
         if validate_data(results_pollution, pollution_fieldnames):
-            save_to_csv(results_pollution, pollution_fieldnames, "air_pollution.csv")
+            save_to_csv(results_pollution, pollution_fieldnames, '/Users/michal_mroz/Github/DataEngineering/WeatherPipeline/results/air_pollution.csv')
             # analyze_pollution_data()
             # plot_pollution_trends()
         else:
