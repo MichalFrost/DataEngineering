@@ -1,3 +1,8 @@
+## Basics ##
+
+SQL (Structured Query Language) is a programming language used to manage and manipulate data stored in relational database management systems (RDBMS). It allows you to retrieve, insert, update, and delete data, as well as define database schemas and control access to data. The basic understanding of SQL is foundational to interact with almost any database.
+
+
 __1. What are Relational Databases?__
 
 Relational databases organize data into tables, where each table represents a specific type of *entity* (like customers or products). These tables are linked together based on relationships between the data, often using shared columns called keys. This structure allows for efficient storage, retrieval, and management of large datasets while ensuring data integrity and consistency.
